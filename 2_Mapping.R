@@ -1,3 +1,6 @@
+
+if(!require(plyr)) install.packages("plyr") &
+  require(plyr)
 if(!require(sf)) install.packages("sf") &
   require(sf)
 if(!require(tmap)) install.packages("tmap") &
@@ -84,16 +87,6 @@ Map_3 <- tm_shape(base_map)+
             main.title.position = c("left", "top"))
 
 
-jpeg(filename = "Social Grade Map.jpg", height = 1920, width = 1080, quality = 600)
-Map_1
-dev.off()
-
-jpeg(filename = "Unweighted Scores Map.jpg", height = 1920, width = 1080, quality = 600)
-Map_2
-dev.off()
-
-jpeg(filename = "Weighted Scorese Map.jpg", height = 1920, width = 1080, quality = 600)
-Map_3
-dev.off()
-
-  
+tmap_save(tm = Map_1, filename = "Social Grade Map 2.jpg")
+tmap_save(tm = Map_2, filename = "Unweighted Scores Map.jpg")
+tmap_save(tm = Map_3, filename = "Weighted Scorese Map.jpg")

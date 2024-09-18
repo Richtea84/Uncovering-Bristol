@@ -1,10 +1,12 @@
 # Regression modelling
 
 # Usual suspects
-if(!require(jquerylib)) install.packages("jquerylib")
-if(!require(proxy)) install.packages("proxy")
-if(!require(labelled)) install.packages("labelled")
-if(!require(terra)) install.packages("terra")
+if(!require(jquerylib)) install.packages("jquerylib") & require(jquerylib)
+if(!require(proxy)) install.packages("proxy") & require(jquerylib)
+if(!require(labelled)) install.packages("labelled") & require(labelled)
+
+if(!require(gdalraster)) install.packages("gdalraster") & require(gdalraster)
+if(!require(terra)) install.packages("terra") & require(terra)
 
 # Packages
 if(!require(tidyverse)) install.packages("tidyverse") &
@@ -15,12 +17,12 @@ if(!require(randomcoloR)) install.packages("randomcoloR") &
 
 # Data and processing
 data_in <- read.csv(
-  list.files(path = ".", pattern = "_Survey"
+  list.files(path = ".", pattern = "_Survey.csv"
              )
 )
 
 data_in |>
-  rename(
+  dplyr::rename(
     "Stop 1" = "Stop.1",
     "Stop 2" = "Stop.2",
     "Stop 3" = "Stop.3",
@@ -47,7 +49,7 @@ apply(
 # IMD data
 
 IMD_scores <- read.csv(
-  list.files(path = ".", pattern = "IMD")
+  list.files(path = ".", pattern = "_deprivation")
 )
 
 IMD_scores_agg <- aggregate(Soc_grad ~ Stop.no., data = IMD_scores, FUN = mean)
@@ -56,17 +58,16 @@ IMD_scores_agg <- aggregate(Soc_grad ~ Stop.no., data = IMD_scores, FUN = mean)
 
 my_pal = randomcoloR::randomColor(count = 10)
 
-windowsFonts(A = windowsFont("Arial"))
 
 jpeg("Weighted Regression Plot.jpg", height = 720, width = 1080)
-plot(IMD_scores_agg$Soc_grad ~ Weighted_average, family = "A",
+plot(IMD_scores_agg$Soc_grad ~ Weighted_average,
      xlab = expression(paste("weighted ", bar(x))),
      ylab = "Index of multiple\ndeprivation ranking")
 abline(lm(IMD_scores_agg$Soc_grad ~ Weighted_average), col = my_pal)
 dev.off()
 
 jpeg("Unweighted Regression Plot.jpg", height = 720, width = 1080)
-plot(IMD_scores_agg$Soc_grad ~ Unweighted_average, family = "A",
+plot(IMD_scores_agg$Soc_grad ~ Unweighted_average,
      xlab = expression(paste("unweighted ", bar(x))),
      ylab = "Index of multiple\ndeprivation ranking")
 abline(lm(IMD_scores_agg$Soc_grad ~ Weighted_average), col = my_pal)
